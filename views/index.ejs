@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Zenners Game</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+</head>
+<script type="text/javascript">
+io = io.connect();
+
+function GameEngine()
+{
+
+	
+	player = new MyHero();
+	
+	var bullets = [];
+	var bullets_total = 0;
+	var keyPressed = [];
+	
+	 world = {
+		width: 40,
+		height: 20,
+		data:	[
+		
+			
+
+			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 2, 2, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 2, 2, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+			6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6,
+			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+
+
+			
+		]
+	};
+
+	function makeLink(name)
+	{
+		name = new MyHero;
+	}
+
+	
+
+	this.drawWorld = function(){
+		var html = '';
+		for(var y=0; y<world.height; y++)
+		{
+			html += "<div class='row'>";
+
+			for(var x=0; x<world.width; x++)
+			{
+				html += "<div class='";
+
+					if(world.data[y*world.width+x] == 0)
+					{
+						html += 'green';
+					}
+						
+					else if(world.data[y*world.width+x] == 5)
+					{
+						html += 'river';
+
+					}
+					else if(world.data[y*world.width+x] == 2)
+					{
+						html += 'prize';
+
+					}
+
+					else if(world.data[y*world.width+x] == 7)
+					{
+						html += 'upLeftTree';
+
+					}
+					else if(world.data[y*world.width+x] == 8)
+					{
+						html += 'upRightTree';
+
+					}
+					else if(world.data[y*world.width+x] == 9)
+					{
+						html += 'lowLeftTree';
+
+					}
+					else if(world.data[y*world.width+x] == 10)
+					{
+						html += 'lowRightTree';
+
+					}
+
+						
+
+				html += "'></div>"
+			}
+
+			html += "</div>";
+		}
+
+		
+		$('#container').append(html);
+	}
+
+	this.drawWorld();
+
+	//game loop that goes forever
+	this.loop = function()
+	{
+		
+		player.draw();
+		
+
+		for(var i=0; i<bullets.length; i++)
+		{
+			bullets[i].moveUp();
+		}
+	}
+
+	//to detect multiple keys being pressed 
+	$(document).keydown(function(e) {
+		if(e.keyCode == 65)
+		{
+			player.performAction("MOVE_LEFT");		
+		}
+
+		else if(e.keyCode == 68)
+		{
+			player.performAction("MOVE_RIGHT");		
+		}
+
+		else if(e.keyCode == 87)
+		{
+			player.performAction("MOVE_UP");		
+		}
+
+		else if(e.keyCode == 83)
+		{
+			player.performAction("MOVE_DOWN");		
+		}
+
+		keyPressed[e.keyCode] = true;
+		
+		if(keyPressed[74])	//space key
+		{
+			
+			bullet = new Bullet({x: player.position.x, y: player.position.y}, bullets_total++); //create a new bullet
+			bullets.push(bullet); //store the bullet in the bullets array
+		}
+	}).keyup(function(e) {
+		delete keyPressed[e.keyCode];
+	});
+
+	setInterval(this.loop, 50);
+}
+
+
+function MyHero()
+{
+	
+	this.grid = 41;
+	this.gridMovementX = -5;
+	this.gridMovementY = -14;
+	this.counter = 1;
+	this.name = function()
+	{
+		var name = prompt("Whats your name?");
+		var html = "<h5 class='name'>"+name+"</h5>"
+		$('#my_player').append(html);
+	}
+
+	this.draw = function()
+	{
+		$('#my_player').css({top: this.gridMovementY+"px", left: this.gridMovementX+"px" });
+
+	}
+	this.performAction = function(action)
+	{
+		if(action == "MOVE_LEFT")
+		{
+			if (world.data[this.grid - 1] >= 5)
+			{
+				console.log ("Sorry you can't move there");
+			}
+			else if (world.data[this.grid] == 2)
+			{
+				$('.prize').hide();
+			}
+			else 
+			{
+				this.grid -= 1;
+				this.gridMovementX -= 20;
+				console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
+				if (this.grid % 2 == 0)
+				{
+					$('#my_player').css("background-position","150px -1463px");
+				}
+				
+				else 
+				{
+					$('#my_player').css("background-position","-180px -1463px");
+				}
+
+			}	
+		}
+			
+		else if(action == 'MOVE_RIGHT')
+		{
+			if (world.data[this.grid+1] >= 5)
+			{
+				console.log ("sorry you cant move there");
+			}
+			else if (world.data[this.grid] == 2)
+			{
+				$('.prize').hide();
+			}
+
+			else 
+			{
+				this.grid += 1;
+				this.gridMovementX += 20;
+				console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
+				if (this.grid % 2 == 0)
+				{
+					$('#my_player').css("background-position","150px -490px");
+				}
+				
+				else 
+				{
+					$('#my_player').css("background-position","180px -490px");
+				}
+			}
+			
+		}	
+		else if(action == 'MOVE_UP')
+		{
+			if (world.data[this.grid - 40] >= 5 )
+			{
+				console.log("sorry you can't move up anymore");
+			}
+			else if (world.data[this.grid] == 2)
+			{
+				$('.prize').hide();
+			}
+			else
+			{
+				this.grid -= 40;
+				this.counter *= -1;
+				this.gridMovementY -= 20;
+				console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
+				if (this.counter  == 1)
+				{
+					$('#my_player').css("background-position","150px -1236px");
+				}
+				
+				else 
+				{
+					$('#my_player').css("background-position","180px -1236px");
+				}
+				
+			}
+
+		}
+		else if(action == 'MOVE_DOWN')
+		{
+			if (world.data[this.grid + 40] >= 5)
+			{
+				console.log ("Sorry you can't move there");
+			}
+			else if (world.data[this.grid] == 2)
+			{
+				$('.prize').hide();
+			}
+
+			
+			else
+			{
+				this.counter *= -1;
+				this.grid += 40;
+				this.gridMovementY += 20;
+				console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
+				if (this.counter == 1)
+				{
+					$('#my_player').css("background-position","150px -912px");
+				}
+				
+				else 
+				{
+					$('#my_player').css("background-position","180px -912px");
+				}
+				console.log (this.counter);
+			}
+			
+		}	
+	}
+}
+
+
+
+$(document).ready(function()
+{
+	
+	var engine = new GameEngine();
+	
+});
+var name = prompt("Type in your username");
+    	io.emit('got_new_user', {username : name});
+    	io.on('new_user',function(stuff){
+    		console.log("hi", stuff.name	);
+    		var addPlayer = '<div id="my_player" style="position:absolute">';
+    		$('#container').append(addPlayer)
+    		
+    		stuff.name = new MyHero();
+    		console.log (stuff.name)
+    		console.log (stuff.name.grid);
+    		
+
+    	});
+
+</script>
+<style>
+	*{
+		font-family: sans-serif;
+
+
+	}
+	.name{
+		margin: 0;
+		padding: 0;
+
+	}
+
+	h5 {
+		top: 10px;
+	}
+	.bullet {
+ 			position:absolute;
+ 			/*background-color:red;
+ 			/*border: 1px solid red;
+ 			width:110px;
+			height:100px;
+ 			/*border-radius:10px;*/
+ 			/*background: url('missple.gif');*/
+ 			background-repeat: no-repeat;
+	}*
+	
+	#container {
+		height: 400px;
+		width: 800px;
+		
+		position:relative;
+		background:
+	}
+	
+	
+
+	#my_player{
+		height: 34px;
+		width: 30px;
+		top: 30px;
+		left: 30px;
+		background: url('/images/zelda.png');
+		background-position: -570px -390px;
+	}
+
+	.row{
+		display:block;
+		border: none;
+		margin: 0px;
+		padding: 0px;
+		line-height: 0;
+	}
+
+	.green{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: 0px -20px;
+		background-color: limegreen;
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+
+	.prize{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: 0px -20px;
+		background-color: black;
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+	.river{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: -20px 0px;
+		
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+
+	.upLeftTree{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: -80px -60px;
+		
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+	.upRightTree{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: -100px -60px;
+		
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+	.lowLeftTree{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: -80px -80px;
+		
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+	.lowRightTree{
+		width:20px;
+		height:20px;
+		background: url('/images/sprites_edit.png');
+		background-position: -100px -80px;
+		
+		margin:0px;
+		padding:0px;
+		display:inline-block;
+		border:0px;
+	}
+
+</style>
+<body >
+	<H1>Play the hook game</H1>
+	<div id="container">		
+	</div>
+				
+	</div>
+	
+	
+</body>
+</html>
