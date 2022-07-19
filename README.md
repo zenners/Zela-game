@@ -29,7 +29,7 @@ The `GameEngine` has these key properties
 players = []
 world = {
   width: 40,
-	height: 20,
+  height: 20,
   data = [...0,0,0,5,5,5...]
 }
 ```
@@ -89,7 +89,7 @@ Reminscent of old Gameboy games, the `Hero` uses a spritesheet to animate the ch
 
 ![](./screenshots/link.png)
 
-The hero has a few useful variables that will be used for animation
+The hero has a few useful variables that will be used for movement and animation.
 
 ```
 function Hero(name, x, y, grid, direction,counter) {
@@ -104,7 +104,7 @@ function Hero(name, x, y, grid, direction,counter) {
 }
 ```
 
-The Hero has a draw function to bridge the data representation of itself to a html/css version users see on their browser.
+The Hero has a draw function to take itself from a data representation to a html/css version users see on the browser.
 
 ```
 
@@ -121,7 +121,7 @@ this.draw = function() {
     $(`.${this.name}`).css({
         top: this.gridMovementY+"px",
         left: this.gridMovementX+"px",
-            "background-position": spritePos[this.direction]
+        "background-position": spritePos[this.direction]
     });
 
 }
