@@ -1,12 +1,13 @@
-When I was learning how to code back in 2014, I wanted to give websockets a go. The idea of creating a real-time application was exciting and I thought a multiplayer browser game would be the best way to do so. I soon realized the challenges in embarking on such a project and left the repo in a buggy state not long after.
+# Introduction
 
-I stumbled upon this github repo for my old websocket project and thought it would be a good idea to refactor it and choose it as my showcase.
+Early on my coding journey in 2014, I wanted to give websockets a go. The idea of creating a real-time application was exciting and I thought a multiplayer browser game would be the best way to learn. I soon realized the challenges in embarking on such a project and left the repo in a buggy state not long after.
 
-The goal of this game is to be the first to find the hidden treasure by running around the map. Other players can join and it can become a hectic race to the prize. Reading the old code felt very nostalgic like it was a letter written to my future self. I could not only see the murky vision for the game, but also realized the limits of my previous capabilities.
+I stumbled upon this github repo for my old websocket project and thought it would be a good idea to refactor it and choose it as my showcase. The game is far from finished, but the refactor has made things more readable and manageable.
+If anything, this repo was given a breathe of new life and I will gladly sneak in some updates from now on.
 
-![](@attachment/Clipboard_2022-07-19-14-58-56.png)
+The goal of this game is to be the first to find the hidden treasure by running around the map. Other players can join and it can become a hectic race to the prize. Reading the old code felt very nostalgic like it was a letter written to my future self. I could see where I wanted to take this project, but I couldn't help but notice some of my own limitations along the way.
 
-The game is far from finished, but the refactor has made things more readable and manageable.
+![](./screenshots/main.png)
 
 # Walkthrough
 
@@ -45,7 +46,7 @@ The numbers in the data grid represent objects that will be generated on the bro
 
 			for(var x=0; x<world.width; x++) {
 				html += "<div class='";
-        html += levelObjectsMap[world.data[y*world.width+x]]
+                html += levelObjectsMap[world.data[y*world.width+x]]
 				html += "'></div>"
 			}
 
@@ -58,10 +59,10 @@ The numbers in the data grid represent objects that will be generated on the bro
 
 ```
 this.loop = function() {
-		players.forEach(function(player){
-			player.draw()
-		})
-	}
+    players.forEach(function(player){
+        player.draw()
+    })
+}
 ```
 
 When we instantiate the `GameEngine` it calls these two functions
@@ -76,7 +77,7 @@ When we instantiate the `GameEngine` it calls these two functions
 
 Reminscent of old Gameboy games, the `Hero` uses a spritesheet to animate the character when it's moving in 4 directions.
 
-![](@attachment/Clipboard_2022-07-19-14-55-25.png)
+![](./screenshots/link.png)
 
 The hero has a few useful variables that will be used for animation
 
@@ -106,24 +107,23 @@ var spritePos = {
 }
 
 // this is what the gameloop runs continuously
-this.draw = function()
-	{
-		$(`.${this.name}`).css({
-			top: this.gridMovementY+"px",
-			left: this.gridMovementX+"px",
-			 "background-position": spritePos[this.direction]
-		});
+this.draw = function() {
+    $(`.${this.name}`).css({
+        top: this.gridMovementY+"px",
+        left: this.gridMovementX+"px",
+            "background-position": spritePos[this.direction]
+    });
 
-	}
+}
 ```
 
 There is 1 main event handler mapped to the W,A,S,D keys for the Hero
 
 ```
 $(document).keydown(function(e) {
-		if(e.keyCode == 65)	{
-			player.performAction("MOVE_LEFT");
-		}
+    if(e.keyCode == 65)	{
+        player.performAction("MOVE_LEFT");
+    }
 	...
 });
 ```
@@ -134,14 +134,14 @@ When an action is received, the hero's values are updated and sent to the server
 this.performAction = function(action){
   ...
   if (action == "MOVE_LEFT") {
-			if (world.data[this.grid - 1] >= 5) {
-				console.log ("Sorry you can't move there");
-			} else {
+    if (world.data[this.grid - 1] >= 5) {
+        console.log ("Sorry you can't move there");
+    } else {
         this.grid -= 1;
-				this.gridMovementX -= 20;
-				this.direction = 'left'
-      }
-	}
+        this.gridMovementX -= 20;
+        this.direction = 'left'
+    }
+}
   else if(action == 'MOVE_UP') {
     if (world.data[this.grid - 40] >= 5 ) {
       console.log("sorry you can't move up anymore");
@@ -196,9 +196,9 @@ socket.on('player_movement', function(data){
 ```
 io.on('update_pos', function(data){
     // push them as instances of Hero class to be able to call .draw()
-		players = data.map(function(player){
-			return new MyHero(player.name, player.gridMovementX, player.gridMovementY, player.grid, player.direction, player.counter)
-		})
+    players = data.map(function(player){
+        return new MyHero(player.name, player.gridMovementX, player.gridMovementY, player.grid, player.direction, player.counter)
+    })
 });
 ```
 
@@ -212,15 +212,15 @@ The repition of conditionals throughout the codebase made it unreadable. Utilizi
 // old code
 if(action == "MOVE_LEFT")
 	...
-				if (this.grid % 2 == 0)
-				{
-					$('#my_player').css("background-position","150px -1463px");
-				}
+    if (this.grid % 2 == 0)
+    {
+        $('#my_player').css("background-position","150px -1463px");
+    }
 
-				else
-				{
-					$('#my_player').css("background-position","-180px -1463px");
-				}
+    else
+    {
+        $('#my_player').css("background-position","-180px -1463px");
+    }
 
 	...
 
@@ -244,10 +244,9 @@ Not only was there DOM manipulation in `MOVE_LEFT`, but can be found in `this.dr
 
 ```
 // old code
-this.draw = function()
-	{
-		$('#my_player').css({top: this.gridMovementY+"px", left: this.gridMovementX+"px" });
-	}
+this.draw = function() {
+    $('#my_player').css({top: this.gridMovementY+"px", left: this.gridMovementX+"px" });
+}
 ```
 
 &
@@ -256,24 +255,24 @@ this.draw = function()
 // old code
 
 if(action == "MOVE_LEFT")
-		{
-      ...
-			else
-			{
-				this.grid -= 1;
-				this.gridMovementX -= 20;
-				console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
-				if (this.grid % 2 == 0)
-				{
-					$('#my_player').css("background-position","150px -1463px");
-				}
+    {
+    ...
+        else
+        {
+            this.grid -= 1;
+            this.gridMovementX -= 20;
+            console.log("grid is ", this.grid, "world.data[this grid] ", world.data[this.grid]);
+            if (this.grid % 2 == 0)
+            {
+                $('#my_player').css("background-position","150px -1463px");
+            }
 
-				else
-				{
-					$('#my_player').css("background-position","-180px -1463px");
-				}
-			}
-		}
+            else
+            {
+                $('#my_player').css("background-position","-180px -1463px");
+            }
+        }
+    }
 ```
 
 ### Data structure usage unclear and under utilizied, Confusing data flow
@@ -284,15 +283,12 @@ if(action == "MOVE_LEFT")
 
 # Possible Enhancements / Bug Fixes
 
-If anything, this repo was given a breathe of new life and I will gladly sneak in some updates from now on.
-
 There are still some bugs with the behavior of the game. A notable bug is the not loading the sprites of the players older than you. The data is correctly available, but the rendering isn't accounting for all of players; only the players that join after you are rendered.
 
 - [ ] Previous players' sprites not loading
 
-Some quality of life improvements regarding game validation could also be added. If you find the tile with the prize, the game just ends and you are forced to restart manually. There is no sprite for the prize either so the tile just shows up white as you reach the prize.
-![](@attachment/Clipboard_2022-07-19-14-56-47.png)
+## To-Do
 
 - [ ] Add sprites and game mechanic for prizes
-- [ ] Add visuals for other players in the game
-- [ ] More levels-
+- [ ] Add game mechanics (new game, playerboard, etc)
+- [ ] Next level, new maps, random map generator
