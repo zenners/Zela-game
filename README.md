@@ -1,9 +1,8 @@
 # Introduction
 
-Early on my coding journey in 2014, I wanted to give websockets a go. The idea of creating a real-time application was exciting and I thought a multiplayer browser game would be the best way to learn. I soon realized the challenges in embarking on such a project and left the repo in a buggy state not long after.
+Early on my coding journey in 2014, I wanted to give websockets a go. The idea of creating a real-time application was exciting and I thought a multiplayer browser game would be the best way to learn. I soon realized the difficulty in taking on such a task and left the repo in a buggy state not long after.
 
-I stumbled upon this github repo for my old websocket project and thought it would be a good idea to refactor it and choose it as my showcase. The game is far from finished, but the refactor has made things more readable and manageable.
-If anything, this repo was given a breathe of new life and I will gladly sneak in some updates from now on.
+I stumbled upon this github repo for my old websocket project and thought it would be a good idea to refactor it and choose it as my showcase. The game is far from finished, but the refactor has given this project a breathe of new life.
 
 The goal of this game is to be the first to find the hidden treasure by running around the map. Other players can join and it can become a hectic race to the prize. Reading the old code felt very nostalgic like it was a letter written to my future self. I could see where I wanted to take this project, but I couldn't help but notice some of my own limitations along the way.
 
@@ -41,17 +40,17 @@ The numbers in the data grid represent objects that will be generated on the bro
   }
   ...
   var html = '';
-		for(var y=0; y<world.height; y++) {
-			html += "<div class='row'>";
+    for(var y=0; y<world.height; y++) {
+        html += "<div class='row'>";
 
-			for(var x=0; x<world.width; x++) {
-				html += "<div class='";
-                html += levelObjectsMap[world.data[y*world.width+x]]
-				html += "'></div>"
-			}
+        for(var x=0; x<world.width; x++) {
+            html += "<div class='";
+            html += levelObjectsMap[world.data[y*world.width+x]]
+            html += "'></div>"
+        }
 
-			html += "</div>";
-		}
+        html += "</div>";
+    }
  }
  $('#container').append(html);
 
