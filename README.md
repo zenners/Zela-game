@@ -8,6 +8,17 @@ The goal of this game is to be the first to find the hidden treasure by running 
 
 ![](./screenshots/main.png)
 
+# Installation
+
+`npm install`
+
+Run
+
+`npm run start `
+
+Open browser at localhost:6789
+Open on a different browser or incognito another localhost:6789
+
 # Walkthrough
 
 ## Game Engine
@@ -68,8 +79,8 @@ When we instantiate the `GameEngine` it calls these two functions
 
 ```
 // run it
-	this.drawWorld();
-	setInterval(this.loop, 50);
+this.drawWorld();
+setInterval(this.loop, 50);
 ```
 
 ## Hero
@@ -188,7 +199,7 @@ socket.on('player_movement', function(data){
   })
 ```
 
-### client - script.js
+### client - public/js/script.js
 
 `updated_pos` is received and since the game engine is still running, player positions are updated on the browser with `player.draw()`
 
