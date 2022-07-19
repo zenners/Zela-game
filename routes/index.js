@@ -2,8 +2,8 @@ module.exports = function Route(app){
   app.get('/', function(req, res){
     res.render('index', {title:'Welcome Page'});
   });
-var users = {};
 
+  
 
 app.io.route('got_new_user', function(req){
 	req.session.sessionID = req.sessionID;
